@@ -71,4 +71,22 @@ class RegisterController extends Controller
             'password' => Hash::make($data['password']),
         ]);
     }
+
+    /**
+     * Store the user's verification
+     *
+     * @param  \Illuminate\Contracts\Auth\CanResetPassword $user
+     * @return boolean
+     */
+    protected function verifiedEmail($user)
+    {
+        $this->guard()->login($user);
+
+        if(!$user->verified) {
+            $user->verifyEmail();
+            return true;
+        }
+
+        return false;
+    }
 }

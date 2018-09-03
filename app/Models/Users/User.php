@@ -35,7 +35,12 @@ class User extends Authenticatable implements CanVerifyEmailContract
 {
     use Notifiable, HasApiTokens, CanVerifyEmail;
 
-    protected $observables = [''];
+    /**
+     * Custom Model Event
+     *
+     * @var array
+     */
+    protected $observables = ['verified'];
 
 
     /**
@@ -55,4 +60,17 @@ class User extends Authenticatable implements CanVerifyEmailContract
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    /**
+     * Verifies the user Email status
+     *
+     */
+    public function verifyEmail()
+    {
+        $this->forceFill([
+            'verified' => true
+        ])->save();
+
+        $this->fireModelEvent('emailVerified', false);
+    }
 }
